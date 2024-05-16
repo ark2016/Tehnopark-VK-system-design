@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: Steam API
+  version: 1.0.0
+servers:
+  - url: https://api.steampowered.com
+paths:
+  /IShoppingCartService/GetShoppingCartContents/v1:
+    get:
+      summary: Get shopping cart contents
+      description: Returns shopping cart contents for specified origin
+      parameters:
+        - name: origin
+          in: query
+          description: Origin URL (e.g., https://store.steampowered.com)
+          required: true
+          schema:
+            type: string
+        - name: input_protobuf_encoded
+          in: query
+          description: Encoded input protobuf
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shoppingCartContents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        itemId:
+                          type: string
+                          description: Item ID
+                        quantity:
+                          type: integer
+                          description: Quantity
+                example:
+                  shoppingCartContents:
+                    - itemId: "123456789"
+                      quantity: 2
+                    - itemId: "987654321"
+                      quantity: 1
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error

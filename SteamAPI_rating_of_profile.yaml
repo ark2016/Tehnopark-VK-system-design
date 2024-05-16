@@ -1,0 +1,78 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'Steam Profile Rating API'
+  description: 'API для оценки профилей пользователей Steam.'
+host: 'api.steam.com'
+basePath: '/v1'
+schemes:
+  - https
+paths:
+  /profile/{userId}/rating:
+    post:
+      security:
+        - bearerAuth: []
+      summary: 'Оценить профиль пользователя'
+      description: 'Позволяет пользователю оценить профиль другого игрока.'
+      parameters:
+        - name: 'userId'
+          in: 'path'
+          required: true
+          type: 'string'
+          description: 'Уникальный идентификатор пользователя Steam.'
+        - name: 'rating'
+          in: 'body'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              stars:
+                type: 'integer'
+                format: 'int32'
+                description: 'Оценка от 1 до 5 звёзд.'
+      responses:
+        '200':
+          description: 'Оценка успешно добавлена.'
+        '400':
+          description: 'Неверный запрос.'
+  /profile/{userId}/warning:
+    post:
+      security:
+        - bearerAuth: []
+      summary: 'Предупреждение игрокам с низким рейтингом'
+      description: 'Отправляет предупреждение игрокам с низким рейтингом.'
+      parameters:
+        - name: 'userId'
+          in: 'path'
+          required: true
+          type: 'string'
+          description: 'Уникальный идентификатор пользователя Steam.'
+      responses:
+        '200':
+          description: 'Предупреждение успешно отправлено.'
+        '404':
+          description: 'Пользователь не найден.'
+  /profile/{userId}/comments:
+    delete:
+      security:
+        - bearerAuth: []
+      summary: 'Удалить комментарии'
+      description: 'Удаляет комментарии пользователя.'
+      parameters:
+        - name: 'userId'
+          in: 'path'
+          required: true
+          type: 'string'
+          description: 'Уникальный идентификатор пользователя Steam.'
+      responses:
+        '200':
+          description: 'Комментарии успешно удалены.'
+        '404':
+          description: 'Комментарии не найдены.'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: Steam Dynamic Store User Data API
+  description: API для получения данных пользователей из динамического магазина Steam.
+  version: 1.0.0
+servers:
+  - url: https://store.steampowered.com
+    description: Основной сервер API
+
+paths:
+  /dynamicstore/userdata/:
+    get:
+      summary: Получение данных пользователя
+      description: Возвращает данные пользователя из динамического магазина Steam.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Идентификатор пользователя
+          schema:
+            type: string
+            example: "0"
+        - name: cc
+          in: query
+          required: true
+          description: Код страны
+          schema:
+            type: string
+            example: "RU"
+        - name: origin
+          in: query
+          required: true
+          description: URL источника
+          schema:
+            type: string
+            example: "https://store.steampowered.com"
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rgWishlist:
+                    type: array
+                    items:
+                      type: string
+                  rgOwnedPackages:
+                    type: array
+                    items:
+                      type: string
+                  rgOwnedApps:
+                    type: array
+                    items:
+                      type: string
+                  rgFollowedApps:
+                    type: array
+                    items:
+                      type: string
+                  rgMasterSubApps:
+                    type: array
+                    items:
+                      type: string
+                  rgPackagesInCart:
+                    type: array
+                    items:
+                      type: string
+                  rgAppsInCart:
+                    type: array
+                    items:
+                      type: string
+                  rgRecommendedTags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tagid:
+                          type: integer
+                          example: 492
+                        name:
+                          type: string
+                          example: "Инди"
+                  rgIgnoredApps:
+                    type: array
+                    items:
+                      type: string
+                  rgIgnoredPackages:
+                    type: array
+                    items:
+                      type: string
+                  rgHardwareUsed:
+                    type: array
+                    items:
+                      type: string
+                  rgCurators:
+                    type: array
+                    items:
+                      type: string
+                  rgCuratorsIgnored:
+                    type: array
+                    items:
+                      type: string
+                  rgCurations:
+                    type: array
+                    items:
+                      type: string
+                  bShowFilteredUserReviewScores:
+                    type: boolean
+                    example: true
+                  rgCreatorsFollowed:
+                    type: array
+                    items:
+                      type: string
+                  rgCreatorsIgnored:
+                    type: array
+                    items:
+                      type: string
+                  rgExcludedTags:
+                    type: array
+                    items:
+                      type: string
+                  rgExcludedContentDescriptorIDs:
+                    type: array
+                    items:
+                      type: integer
+                      example: 3
+                  rgAutoGrantApps:
+                    type: array
+                    items:
+                      type: string
+                  rgRecommendedApps:
+                    type: array
+                    items:
+                      type: string
+                  rgPreferredPlatforms:
+                    type: array
+                    items:
+                      type: string
+                  rgPrimaryLanguage:
+                    type: string
+                    nullable: true
+                    example: null
+                  rgSecondaryLanguages:
+                    type: array
+                    items:
+                      type: string
+                  bAllowAppImpressions:
+                    type: boolean
+                    example: true
+                  nCartLineItemCount:
+                    type: integer
+                    example: 0
+                  nRemainingCartDiscount:
+                    type: integer
+                    example: 0
+                  nTotalCartDiscount:
+                    type: integer
+                    example: 0
+        '400':
+          description: Неверный запрос
+        '401':
+          description: Не авторизован
+        '403':
+          description: Доступ запрещен
+        '500':
+          description: Внутренняя ошибка сервера
+      security:
+        - cookieAuth: []
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+  title: Steam Charts Service API
+  description: API для получения лучших релизов года из Steam Charts.
+  version: 1.0.0
+servers:
+  - url: https://api.steampowered.com
+    description: Основной сервер API
+
+paths:
+  /ISteamChartsService/GetBestOfYearPages/v1:
+    get:
+      summary: Получение лучших релизов года
+      description: Возвращает лучшие релизы года за указанный период.
+      parameters:
+        - name: origin
+          in: query
+          required: true
+          description: URL источника
+          schema:
+            type: string
+            example: "https://store.steampowered.com"
+        - name: input_protobuf_encoded
+          in: query
+          required: false
+          description: Закодированные данные protobuf
+          schema:
+            type: string
+            example: ""
+      responses:
+        '200':
+          description: Успешный ответ (данные в формате Protobuf)
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Неверный запрос
+        '401':
+          description: Не авторизован
+        '403':
+          description: Доступ запрещен
+        '500':
+          description: Внутренняя ошибка сервера
+      security:
+        - apiKeyAuth: []
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  responses:
+    ProtobufResponse:
+      description: Данные в формате Protobuf
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary

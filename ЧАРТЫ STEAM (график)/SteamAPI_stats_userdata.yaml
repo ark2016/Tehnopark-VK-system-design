@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Steam API
+  description: API для получения статистики Steam пользователей
+  version: "1.0.0"
+servers:
+  - url: https://store.steampowered.com
+paths:
+  /stats/userdata.json:
+    get:
+      summary: Получить статистику пользователей Steam
+      description: |
+        Возвращает статистику пользователей Steam за последние несколько дней в формате JSON.
+      parameters:
+        - name: days_back
+          in: query
+          description: Количество дней назад для получения данных
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Успешный ответ со статистикой пользователей Steam
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      description: Название статистики
+                      example: "Steam users logged in"
+                    color:
+                      type: string
+                      description: Цвет графика
+                      example: "#67c1f5"
+                    data:
+                      type: array
+                      description: Данные статистики
+                      items:
+                        type: array
+                        items:
+                          - type: integer
+                            description: Таймстамп в миллисекундах
+                            example: 1715584388000
+                          - type: integer
+                            description: Количество пользователей
+                            example: 21143680
+        '400':
+          description: Некорректный запрос
+        '500':
+          description: Внутренняя ошибка сервера
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []

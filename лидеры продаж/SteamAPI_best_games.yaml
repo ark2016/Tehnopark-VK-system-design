@@ -1,0 +1,772 @@
+openapi: 3.0.0
+info:
+  title: Steam Popular Games API
+  version: 1.0.0
+  description: API для доступа к данным о самых популярных играх на Steam.
+# servers:
+#   - url: 'https://api.steampowered.com'
+paths:
+  /games/popular:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Добавление новой игры в список популярных
+      description: Этот метод позволяет добавить игру в список популярных на основе данных, предоставленных пользователем.
+      operationId: addGameToPopular
+      tags:
+        - games
+      requestBody:
+        description: Данные новой популярной игры
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GamePOST'
+      responses:
+        '201':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: Поле, в котором произошла ошибка
+                        issue:
+                          type: string
+                          description: Описание проблемы с полем
+              example:
+                error: "Неверный запрос"
+                code: 400
+                details:
+                  - field: "gameId"
+                    issue: "gameId должен быть целым числом"
+        '401':
+          description: Неавторизованный доступ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Требуется аутентификация"
+                code: 401
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "У вас нет доступа к этому ресурсу"
+                code: 403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Запрашиваемый ресурс не найден"
+                code: 404
+        '418':
+          description: Я — чайник
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Я чайник, не могу заварить кофе."
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Внутренняя ошибка сервера"
+                code: 500
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Сервис временно недоступен, попробуйте позже"
+                code: 503
+        '520':
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Неизвестная ошибка сервера"
+                code: 520
+        '521':
+          description: Веб-сервер не работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Веб-сервер не работает"
+                code: 521
+    get:
+      security:
+        - bearerAuth: []
+      summary: Получение списка популярных игр
+      operationId: getPopularGames
+      tags:
+        - games
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: Поле, в котором произошла ошибка
+                        issue:
+                          type: string
+                          description: Описание проблемы с полем
+              example:
+                error: "Неверный запрос"
+                code: 400
+                details:
+                  - field: "gameId"
+                    issue: "gameId должен быть целым числом"
+        '401':
+          description: Неавторизованный доступ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Требуется аутентификация"
+                code: 401
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "У вас нет доступа к этому ресурсу"
+                code: 403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Запрашиваемый ресурс не найден"
+                code: 404
+        '418':
+          description: Я — чайник
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Я чайник, не могу заварить кофе."
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Внутренняя ошибка сервера"
+                code: 500
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Сервис временно недоступен, попробуйте позже"
+                code: 503
+        '520':
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Неизвестная ошибка сервера"
+                code: 520
+        '521':
+          description: Веб-сервер не работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Веб-сервер не работает"
+                code: 521
+    put:
+      security:
+        - bearerAuth: []
+      summary: Обновление информации о популярной игре
+      operationId: updateGameInfo
+      tags:
+        - games
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: Поле, в котором произошла ошибка
+                        issue:
+                          type: string
+                          description: Описание проблемы с полем
+              example:
+                error: "Неверный запрос"
+                code: 400
+                details:
+                  - field: "gameId"
+                    issue: "gameId должен быть целым числом"
+        '401':
+          description: Неавторизованный доступ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Требуется аутентификация"
+                code: 401
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "У вас нет доступа к этому ресурсу"
+                code: 403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Запрашиваемый ресурс не найден"
+                code: 404
+        '418':
+          description: Я — чайник
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Я чайник, не могу заварить кофе."
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Внутренняя ошибка сервера"
+                code: 500
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Сервис временно недоступен, попробуйте позже"
+                code: 503
+        '520':
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Неизвестная ошибка сервера"
+                code: 520
+        '521':
+          description: Веб-сервер не работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Веб-сервер не работает"
+                code: 521
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Удаление игры из списка популярных
+      operationId: deletePopularGame
+      tags:
+        - games
+      parameters:
+        - name: gameId
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Уникальный идентификатор игры для удаления
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: Поле, в котором произошла ошибка
+                        issue:
+                          type: string
+                          description: Описание проблемы с полем
+              example:
+                error: "Неверный запрос"
+                code: 400
+                details:
+                  - field: "gameId"
+                    issue: "gameId должен быть целым числом"
+        '401':
+          description: Неавторизованный доступ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Требуется аутентификация"
+                code: 401
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "У вас нет доступа к этому ресурсу"
+                code: 403
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Запрашиваемый ресурс не найден"
+                code: 404
+        '418':
+          description: Я — чайник
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Я чайник, не могу заварить кофе."
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Внутренняя ошибка сервера"
+                code: 500
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Сервис временно недоступен, попробуйте позже"
+                code: 503
+        '520':
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Неизвестная ошибка сервера"
+                code: 520
+        '521':
+          description: Веб-сервер не работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение об ошибке
+                  code:
+                    type: integer
+                    description: Код ошибки
+              example:
+                error: "Веб-сервер не работает"
+                code: 521
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Game:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          example: 123
+          description: Уникальный идентификатор игры
+        name:
+          type: string
+          example: "Factorio"
+          description: Название игры
+        developer:
+          type: string
+          example: "Wube Software LTD."
+          description: Разработчик игры
+        publisher:
+          type: string
+          example: "Wube Software LTD."
+          description: Издатель игры
+        releaseDate:
+          type: string
+          format: date
+          example: "2020-08-14"
+          description: Дата релиза игры
+        price:
+          type: number
+          format: float
+          example: "1200"
+          description: Цена игры
+    GamePOST:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          example: 123
+          description: Уникальный идентификатор игры
+        name:
+          type: string
+          example: "Factorio"
+          description: Название игры
+        developer:
+          type: string
+          example: "Wube Software LTD."
+          description: Разработчик игры
+        publisher:
+          type: string
+          example: "Wube Software LTD."
+          description: Издатель игры
+        releaseDate:
+          type: string
+          format: date
+          example: "2020-08-14"
+          description: Дата релиза игры
+        price:
+          type: number
+          format: float
+          example: "1200"
+          description: Цена игры

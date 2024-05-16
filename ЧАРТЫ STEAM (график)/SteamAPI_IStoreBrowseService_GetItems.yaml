@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: Steam Store Browse API
+  description: API для получения информации о товарах в Steam Store
+  version: "1.0.0"
+servers:
+  - url: https://api.steampowered.com
+paths:
+  /IStoreBrowseService/GetItems/v1:
+    get:
+      summary: Получить список товаров из Steam Store
+      description: |
+        Возвращает список товаров из Steam Store на основе запроса в кодированном виде.
+      parameters:
+        - name: origin
+          in: query
+          description: URL источника запроса
+          required: true
+          schema:
+            type: string
+            example: "https://store.steampowered.com"
+        - name: input_protobuf_encoded
+          in: query
+          description: Данные запроса в кодированном виде
+          required: true
+          schema:
+            type: string
+            example: "CgQIupFKCgQI4tJPCgQIyv1PCgQI4s9fCgQItq5mCgQI%2FuZmCgQInI9nCgUIjtuTAQoFCNaplQESDwoHcnVzc2lhbhoCUlUgARoCCAE%3D"
+      responses:
+        '200':
+          description: Успешный ответ с данными о товарах из Steam Store
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        description: Массив товаров и их данных
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Идентификатор товара
+                              example: 12345
+                            name:
+                              type: string
+                              description: Название товара
+                              example: "Half-Life: Alyx"
+                            price:
+                              type: object
+                              description: Информация о цене товара
+                              properties:
+                                amount:
+                                  type: integer
+                                  description: Сумма в минимальной валютной единице (например, центы)
+                                  example: 6000
+                                currency:
+                                  type: string
+                                  description: Валюта
+                                  example: "USD"
+                            tags:
+                              type: array
+                              description: Теги, связанные с товаром
+                              items:
+                                type: string
+                                example: "VR"
+        '400':
+          description: Некорректный запрос
+        '500':
+          description: Внутренняя ошибка сервера
+      security:
+        - api_key: []
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: key
+      in: query

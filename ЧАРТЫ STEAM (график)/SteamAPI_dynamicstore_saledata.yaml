@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: Steam API
+  version: 1.0.0
+servers:
+  - url: https://store.steampowered.com
+paths:
+  /dynamicstore/saledata/:
+    get:
+      summary: Get sale data
+      description: Returns sale data for specified country code
+      parameters:
+        - name: cc
+          in: query
+          description: Country code (e.g., RU for Russia)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bAllowAppImpressions:
+                    type: boolean
+                    description: Allow app impressions
+                example:
+                  bAllowAppImpressions: true
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error

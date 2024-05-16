@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: Steam Charts API
+  description: API для получения информации о популярных играх с одновременными игроками
+  version: "1.0.0"
+servers:
+  - url: https://api.steampowered.com
+paths:
+  /ISteamChartsService/GetGamesByConcurrentPlayers/v1:
+    get:
+      summary: Получить список игр с наибольшим числом одновременных игроков
+      description: |
+        Возвращает список игр на основе количества одновременных игроков.
+      parameters:
+        - name: origin
+          in: query
+          description: URL источника запроса
+          required: true
+          schema:
+            type: string
+            example: "https://store.steampowered.com"
+        - name: input_protobuf_encoded
+          in: query
+          description: Данные запроса в кодированном виде
+          required: true
+          schema:
+            type: string
+            example: "Cg8KB3J1c3NpYW4aAlJVIAESEAgBEAEYASgBMAFAFEgBUAE%3D"
+      responses:
+        '200':
+          description: Успешный ответ с данными о популярных играх
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      games:
+                        type: array
+                        description: Массив игр и их данных
+                        items:
+                          type: object
+                          properties:
+                            appid:
+                              type: integer
+                              description: Идентификатор игры
+                              example: 730
+                            name:
+                              type: string
+                              description: Название игры
+                              example: "Counter-Strike: Global Offensive"
+                            concurrent_players:
+                              type: integer
+                              description: Количество одновременных игроков
+                              example: 500000
+        '400':
+          description: Некорректный запрос
+        '500':
+          description: Внутренняя ошибка сервера
+      security:
+        - api_key: []
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: key
+      in: query
