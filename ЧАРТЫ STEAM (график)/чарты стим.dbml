@@ -1,0 +1,84 @@
+// Описание таблицы Users
+Table Users {
+  user_id Int [pk]
+  username Varchar(50)
+  email Varchar(100)
+  country Varchar(50)
+  created_at Timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// Описание таблицы Games
+Table Games {
+  game_id Int [pk]
+  name Varchar(100)
+  developer Varchar(100)
+  publisher Varchar(100)
+  release_date Date
+  price Decimal(8,2)
+  created_at Timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// Описание таблицы Tags
+Table Tags {
+  tag_id Int [pk]
+  name Varchar(50)
+}
+
+// Описание таблицы GameTags
+Table GameTags {
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  tag_id Int [ref: > Tags.tag_id]   // Внешний ключ к Tags
+  Indexes {
+    (game_id, tag_id) [pk]
+  }
+}
+
+// Описание таблицы Purchases
+Table Purchases {
+  purchase_id Int [pk]
+  user_id Int [ref: > Users.user_id] // Внешний ключ к Users
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  purchase_date Timestamp [default: `CURRENT_TIMESTAMP`]
+  amount Decimal(8,2)
+}
+
+// Описание таблицы Reviews
+Table Reviews {
+  review_id Int [pk]
+  user_id Int [ref: > Users.user_id] // Внешний ключ к Users
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  // rating Int [check: rating >= 0 and rating <= 10]
+  text Text
+  review_date Timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// Описание таблицы ConcurrentPlayers
+Table ConcurrentPlayers {
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  timestamp Timestamp
+  concurrent_players Int
+  Indexes {
+    (game_id, timestamp) [pk]
+  }
+}
+
+// Описание таблицы TopSellers
+Table TopSellers {
+  rank Int
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  week_start Date
+  week_end Date
+  Indexes {
+    (rank, week_start, week_end) [pk]
+  }
+}
+
+// Описание таблицы BestOfYear
+Table BestOfYear {
+  rank Int
+  game_id Int [ref: > Games.game_id] // Внешний ключ к Games
+  year Int
+  Indexes {
+    (rank, year) [pk]
+  }
+}
