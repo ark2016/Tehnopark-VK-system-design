@@ -1,0 +1,47 @@
+Table users {
+  user_id varchar [pk] // Уникальный идентификатор пользователя
+  username varchar [not null]
+  email varchar [not null, unique]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  // updated_at timestamp [default: `CURRENT_TIMESTAMP` on update]
+
+  Indexes {
+    (username)
+    (email)
+  }
+}
+
+Table ratings {
+  rating_id int [pk, increment] // Автоинкрементный идентификатор оценки
+  user_id varchar [ref: > users.user_id] // Внешний ключ на таблицу пользователей
+  // stars int [not null, check: stars >= 1 and stars <= 5] // Оценка от 1 до 5 звёзд
+  rated_by varchar [ref: > users.user_id] // Пользователь, который поставил оценку
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    (user_id)
+    (rated_by)
+  }
+}
+
+Table warnings {
+  warning_id int [pk, increment] // Автоинкрементный идентификатор предупреждения
+  user_id varchar [ref: > users.user_id] // Внешний ключ на таблицу пользователей
+  message text [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    (user_id)
+  }
+}
+
+Table comments {
+  comment_id int [pk, increment] // Автоинкрементный идентификатор комментария
+  user_id varchar [ref: > users.user_id] // Внешний ключ на таблицу пользователей
+  text text [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    (user_id)
+  }
+}
